@@ -1,9 +1,7 @@
 const axios = require('axios');
 
-// Configuration
 const API_URL = 'http://localhost:3000/bfhl'; // Change to your deployed URL when testing production
 
-// Test cases
 const testCases = [
     {
         name: "Example A",

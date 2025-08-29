@@ -4,34 +4,28 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Configuration - Replace these with your actual details
 const USER_CONFIG = {
-  full_name: "adarsh_ghodke", // Replace with your name in lowercase
-  dob: "12052005", // Replace with your DOB in ddmmyyyy format
-  email: "adarshtukaramghodke2022@vitbhopal.ac.in", // Replace with your email
-  roll_number: "22BCE10630", // Replace with your roll number
+  full_name: "adarsh_ghodke",
+  dob: "12052005",
+  email: "adarshtukaramghodke2022@vitbhopal.ac.in",
+  roll_number: "22BCE10630",
 };
 
-// Helper function to check if a string is a number
 const isNumber = (str) => {
   return !isNaN(str) && !isNaN(parseFloat(str));
 };
 
-// Helper function to check if a character is alphabetic
 const isAlphabet = (str) => {
   return str.length === 1 && /^[a-zA-Z]$/.test(str);
 };
 
-// Helper function to check if a character is a special character
 const isSpecialChar = (str) => {
   return str.length === 1 && /[^a-zA-Z0-9]/.test(str);
 };
 
-// Helper function to create alternating caps string
 const createAlternatingCaps = (str) => {
   let result = "";
   for (let i = 0; i < str.length; i++) {
@@ -44,7 +38,6 @@ const createAlternatingCaps = (str) => {
   return result;
 };
 
-// Main processing function
 const processData = (data) => {
   const oddNumbers = [];
   const evenNumbers = [];
@@ -53,7 +46,6 @@ const processData = (data) => {
   let sumOfNumbers = 0;
   let alphabeticalChars = "";
 
-  // Process each element in the data array
   data.forEach((item) => {
     const str = String(item).trim();
 
@@ -74,7 +66,6 @@ const processData = (data) => {
     }
   });
 
-  // Create concatenated string (reverse order with alternating caps)
   const reversedAlphabets = alphabeticalChars.split("").reverse().join("");
   const concatString = createAlternatingCaps(reversedAlphabets);
 
@@ -88,17 +79,14 @@ const processData = (data) => {
   };
 };
 
-// GET endpoint (optional - for testing)
 app.get("/bfhl", (req, res) => {
   res.status(200).json({
     operation_code: 1,
   });
 });
 
-// POST endpoint - Main API
 app.post("/bfhl", (req, res) => {
   try {
-    // Validate request body
     if (!req.body || !req.body.data) {
       return res.status(400).json({
         is_success: false,
@@ -108,7 +96,6 @@ app.post("/bfhl", (req, res) => {
 
     const { data } = req.body;
 
-    // Validate data is an array
     if (!Array.isArray(data)) {
       return res.status(400).json({
         is_success: false,
@@ -116,10 +103,8 @@ app.post("/bfhl", (req, res) => {
       });
     }
 
-    // Process the data
     const result = processData(data);
 
-    // Construct response
     const response = {
       is_success: true,
       user_id: `${USER_CONFIG.full_name}_${USER_CONFIG.dob}`,
@@ -143,7 +128,6 @@ app.post("/bfhl", (req, res) => {
   }
 });
 
-// Health check endpoint
 app.get("/", (req, res) => {
   res.json({
     message: "BFHL API is running",
@@ -154,7 +138,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -163,12 +146,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server (for local development)
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
 
-// Export for Vercel
 module.exports = app;
